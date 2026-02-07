@@ -39,8 +39,8 @@
           <h2>New Sale</h2>
           <div class="panel-actions">
             <input id="barcode-input" type="text" placeholder="Scan barcode or search" />
-            <button id="hold-sale">Hold Sale</button>
-            <button id="resume-sale">Resume Held</button>
+            <button id="hold-sale" class="ghost">Hold Sale</button>
+            <button id="resume-sale" class="ghost">Resume Held</button>
           </div>
         </div>
         <div class="sales-layout">
@@ -57,7 +57,7 @@
                 <h3>Current Ticket</h3>
                 <span id="ticket-id">#A-10021</span>
               </div>
-              <button id="clear-cart">Clear</button>
+              <button id="clear-cart" class="ghost">Clear</button>
             </div>
             <div id="cart-items" class="cart-items"></div>
             <div class="cart-summary">
@@ -91,18 +91,34 @@
       <section class="panel" id="products">
         <div class="panel-header">
           <h2>Products</h2>
-          <button id="add-product" class="primary">Add Product</button>
+          <div class="panel-actions">
+            <input id="product-filter" type="search" placeholder="Filter by name or SKU" />
+            <button id="add-product" class="primary">Add Product</button>
+          </div>
         </div>
         <div class="table">
           <div class="table-row header">
             <span>SKU</span>
             <span>Name</span>
             <span>Category</span>
+            <span>Cost</span>
             <span>Stock</span>
             <span>Price</span>
             <span>Actions</span>
           </div>
           <div id="product-table"></div>
+        </div>
+        <div class="product-insights">
+          <div class="insight-card">
+            <h3>Potential Profit</h3>
+            <p id="profit-potential">$0.00</p>
+            <span class="muted">Based on current stock and cost.</span>
+          </div>
+          <div class="insight-card">
+            <h3>Margin</h3>
+            <p id="profit-margin">0%</p>
+            <span class="muted">Weighted average across inventory.</span>
+          </div>
         </div>
       </section>
 
@@ -132,7 +148,7 @@
               <option value="week">This Week</option>
               <option value="month">This Month</option>
             </select>
-            <button id="export-report">Export CSV</button>
+            <button id="export-report" class="ghost">Export CSV</button>
           </div>
         </div>
         <div class="report-grid">
@@ -193,7 +209,7 @@
               <li>Receipt Printer: Ready</li>
               <li>Cash Drawer: Ready</li>
             </ul>
-            <button id="test-print">Test Print</button>
+            <button id="test-print" class="ghost">Test Print</button>
           </div>
           <div class="settings-card">
             <h3>Users & Permissions</h3>
@@ -202,7 +218,7 @@
               <li>Cashier (sales only)</li>
               <li>Inventory (products + counts)</li>
             </ul>
-            <button id="manage-users">Manage Users</button>
+            <button id="manage-users" class="ghost">Manage Users</button>
           </div>
         </div>
       </section>
@@ -213,7 +229,7 @@
         <h3 id="modal-title">Edit</h3>
         <form id="modal-form"></form>
         <div class="modal-actions">
-          <button id="cancel-modal">Cancel</button>
+          <button id="cancel-modal" class="ghost">Cancel</button>
           <button id="save-modal" class="primary">Save</button>
         </div>
       </div>

@@ -11,6 +11,7 @@ const state = {
       id: "PRD-001",
       name: "Organic Bananas",
       category: "Produce",
+      cost: 0.72,
       price: 1.29,
       stock: 92,
     },
@@ -18,6 +19,7 @@ const state = {
       id: "PRD-002",
       name: "Whole Milk 1L",
       category: "Dairy",
+      cost: 2.1,
       price: 3.49,
       stock: 38,
     },
@@ -25,6 +27,7 @@ const state = {
       id: "PRD-003",
       name: "Brown Eggs (12ct)",
       category: "Dairy",
+      cost: 2.6,
       price: 4.25,
       stock: 24,
     },
@@ -32,6 +35,7 @@ const state = {
       id: "PRD-004",
       name: "Avocado Pack",
       category: "Produce",
+      cost: 3.55,
       price: 5.99,
       stock: 12,
     },
@@ -39,6 +43,7 @@ const state = {
       id: "PRD-005",
       name: "Sparkling Water",
       category: "Beverages",
+      cost: 0.84,
       price: 1.75,
       stock: 54,
     },
@@ -46,6 +51,7 @@ const state = {
       id: "PRD-006",
       name: "Bakery Sourdough",
       category: "Bakery",
+      cost: 2.95,
       price: 4.85,
       stock: 16,
     },
@@ -126,6 +132,7 @@ const openModal = (type, itemId = null) => {
     buildModalInput("SKU", "id", itemId);
     buildModalInput("Name", "name", itemId);
     buildModalInput("Category", "category", itemId);
+    buildModalInput("Cost Price", "cost", itemId, "number");
     buildModalInput("Stock", "stock", itemId, "number");
     buildModalInput("Price", "price", itemId, "number");
   }
@@ -211,8 +218,11 @@ const updateCart = () => {
 
 const renderProducts = (filter = "") => {
   productGrid.innerHTML = "";
-  const filtered = state.products.filter((product) =>
-    product.name.toLowerCase().includes(filter.toLowerCase())
+  const normalizedFilter = filter.toLowerCase();
+  const filtered = state.products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(normalizedFilter) ||
+      product.id.toLowerCase().includes(normalizedFilter)
   );
 
   filtered.forEach((product) => {
@@ -234,15 +244,22 @@ const renderProducts = (filter = "") => {
   });
 };
 
-const renderProductTable = () => {
+const renderProductTable = (filter = "") => {
   productTable.innerHTML = "";
-  state.products.forEach((product) => {
+  const normalizedFilter = filter.toLowerCase();
+  const filtered = state.products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(normalizedFilter) ||
+      product.id.toLowerCase().includes(normalizedFilter)
+  );
+  filtered.forEach((product) => {
     const row = document.createElement("div");
     row.className = "table-row";
     row.innerHTML = `
       <span>${product.id}</span>
       <span>${product.name}</span>
       <span>${product.category}</span>
+      <span>${currency.format(product.cost ?? 0)}</span>
       <span>${product.stock}</span>
       <span>${currency.format(product.price)}</span>
       <span>
@@ -252,6 +269,22 @@ const renderProductTable = () => {
     `;
     productTable.appendChild(row);
   });
+};
+
+const renderProfitInsights = () => {
+  const profitPotential = state.products.reduce(
+    (sum, product) => sum + (product.price - (product.cost ?? 0)) * product.stock,
+    0
+  );
+  const revenue = state.products.reduce(
+    (sum, product) => sum + product.price * product.stock,
+    0
+  );
+  const margin = revenue > 0 ? (profitPotential / revenue) * 100 : 0;
+
+  document.getElementById("profit-potential").textContent =
+    currency.format(profitPotential);
+  document.getElementById("profit-margin").textContent = `${margin.toFixed(1)}%`;
 };
 
 const renderCustomerTable = () => {
@@ -317,6 +350,7 @@ const handleModalSave = () => {
       id: values.id || `PRD-${Date.now()}`,
       name: values.name,
       category: values.category,
+      cost: Number(values.cost || 0),
       stock: Number(values.stock || 0),
       price: Number(values.price || 0),
     };
@@ -330,6 +364,7 @@ const handleModalSave = () => {
     }
     renderProducts();
     renderProductTable();
+    renderProfitInsights();
   }
 
   if (modalState.type === "customer") {
@@ -366,6 +401,10 @@ const setupEventListeners = () => {
 
   document.getElementById("product-search").addEventListener("input", (event) => {
     renderProducts(event.target.value);
+  });
+
+  document.getElementById("product-filter").addEventListener("input", (event) => {
+    renderProductTable(event.target.value);
   });
 
   document.getElementById("barcode-input").addEventListener("change", (event) => {
@@ -442,6 +481,7 @@ const setupEventListeners = () => {
       state.products = state.products.filter((product) => product.id !== id);
       renderProducts();
       renderProductTable();
+      renderProfitInsights();
     }
   });
 
@@ -482,5 +522,6 @@ renderProducts();
 renderProductTable();
 renderCustomerTable();
 renderReports();
+renderProfitInsights();
 updateCart();
 setupEventListeners();
