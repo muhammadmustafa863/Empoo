@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Empoo Mart POS</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <h1>Empoo Mart POS</h1>
+        <p class="subtitle">Offline-friendly point of sale with inventory, customers, and reporting.</p>
+      </div>
+      <div class="shift-card">
+        <div>
+          <span class="label">Shift</span>
+          <strong id="shift-status">Open</strong>
+        </div>
+        <div>
+          <span class="label">Cash Drawer</span>
+          <strong id="cash-drawer">$325.00</strong>
+        </div>
+        <button id="close-shift">Close Shift</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="sidebar">
+        <button class="nav-item active" data-panel="sales">Sales</button>
+        <button class="nav-item" data-panel="products">Products</button>
+        <button class="nav-item" data-panel="customers">Customers</button>
+        <button class="nav-item" data-panel="reports">Reports</button>
+        <button class="nav-item" data-panel="settings">Settings</button>
+      </aside>
+
+      <section class="panel active" id="sales">
+        <div class="panel-header">
+          <h2>New Sale</h2>
+          <div class="panel-actions">
+            <input id="barcode-input" type="text" placeholder="Scan barcode or search" />
+            <button id="hold-sale" class="ghost">Hold Sale</button>
+            <button id="resume-sale" class="ghost">Resume Held</button>
+          </div>
+        </div>
+        <div class="sales-layout">
+          <div class="catalog">
+            <div class="toolbar">
+              <h3>Quick Picks</h3>
+              <input id="product-search" type="search" placeholder="Search products" />
+            </div>
+            <div id="product-grid" class="product-grid"></div>
+          </div>
+          <div class="cart">
+            <div class="cart-header">
+              <div>
+                <h3>Current Ticket</h3>
+                <span id="ticket-id">#A-10021</span>
+              </div>
+              <button id="clear-cart" class="ghost">Clear</button>
+            </div>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-summary">
+              <div class="summary-row">
+                <span>Subtotal</span>
+                <strong id="subtotal">$0.00</strong>
+              </div>
+              <div class="summary-row">
+                <span>Tax (7.5%)</span>
+                <strong id="tax">$0.00</strong>
+              </div>
+              <div class="summary-row">
+                <span>Discount</span>
+                <input id="discount" type="number" min="0" value="0" />
+              </div>
+              <div class="summary-row total">
+                <span>Total</span>
+                <strong id="total">$0.00</strong>
+              </div>
+              <div class="payment-actions">
+                <button class="pay" data-method="Cash">Cash</button>
+                <button class="pay" data-method="Card">Card</button>
+                <button class="pay" data-method="Mobile">Mobile</button>
+              </div>
+              <button id="complete-sale" class="primary">Complete Sale</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="products">
+        <div class="panel-header">
+          <h2>Products</h2>
+          <div class="panel-actions">
+            <input id="product-filter" type="search" placeholder="Filter by name or SKU" />
+            <button id="add-product" class="primary">Add Product</button>
+          </div>
+        </div>
+        <div class="table">
+          <div class="table-row header">
+            <span>SKU</span>
+            <span>Name</span>
+            <span>Category</span>
+            <span>Cost</span>
+            <span>Stock</span>
+            <span>Price</span>
+            <span>Actions</span>
+          </div>
+          <div id="product-table"></div>
+        </div>
+        <div class="product-insights">
+          <div class="insight-card">
+            <h3>Potential Profit</h3>
+            <p id="profit-potential">$0.00</p>
+            <span class="muted">Based on current stock and cost.</span>
+          </div>
+          <div class="insight-card">
+            <h3>Margin</h3>
+            <p id="profit-margin">0%</p>
+            <span class="muted">Weighted average across inventory.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="customers">
+        <div class="panel-header">
+          <h2>Customers & Loyalty</h2>
+          <button id="add-customer" class="primary">Add Customer</button>
+        </div>
+        <div class="table">
+          <div class="table-row header">
+            <span>Name</span>
+            <span>Phone</span>
+            <span>Points</span>
+            <span>Member Since</span>
+            <span>Actions</span>
+          </div>
+          <div id="customer-table"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="reports">
+        <div class="panel-header">
+          <h2>Reports</h2>
+          <div class="panel-actions">
+            <select id="report-range">
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+            </select>
+            <button id="export-report" class="ghost">Export CSV</button>
+          </div>
+        </div>
+        <div class="report-grid">
+          <div class="report-card">
+            <h3>Gross Sales</h3>
+            <p id="gross-sales">$2,482.10</p>
+            <span class="muted">+12% vs last period</span>
+          </div>
+          <div class="report-card">
+            <h3>Transactions</h3>
+            <p id="transactions">148</p>
+            <span class="muted">Avg ticket $16.77</span>
+          </div>
+          <div class="report-card">
+            <h3>Top Category</h3>
+            <p id="top-category">Fresh Produce</p>
+            <span class="muted">$732.40</span>
+          </div>
+          <div class="report-card">
+            <h3>Low Stock Alerts</h3>
+            <ul id="low-stock" class="pill-list"></ul>
+          </div>
+        </div>
+        <div class="table">
+          <div class="table-row header">
+            <span>Time</span>
+            <span>Receipt</span>
+            <span>Cashier</span>
+            <span>Items</span>
+            <span>Total</span>
+            <span>Status</span>
+          </div>
+          <div id="report-table"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="settings">
+        <div class="panel-header">
+          <h2>Settings</h2>
+        </div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3>Store Info</h3>
+            <label>
+              Store Name
+              <input id="store-name" type="text" value="Empoo Mart" />
+            </label>
+            <label>
+              Default Tax Rate (%)
+              <input id="tax-rate" type="number" min="0" value="7.5" />
+            </label>
+            <button id="save-store" class="primary">Save</button>
+          </div>
+          <div class="settings-card">
+            <h3>Hardware</h3>
+            <ul>
+              <li>Barcode Scanner: Connected</li>
+              <li>Receipt Printer: Ready</li>
+              <li>Cash Drawer: Ready</li>
+            </ul>
+            <button id="test-print" class="ghost">Test Print</button>
+          </div>
+          <div class="settings-card">
+            <h3>Users & Permissions</h3>
+            <ul>
+              <li>Shift Manager (full access)</li>
+              <li>Cashier (sales only)</li>
+              <li>Inventory (products + counts)</li>
+            </ul>
+            <button id="manage-users" class="ghost">Manage Users</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <h3 id="modal-title">Edit</h3>
+        <form id="modal-form"></form>
+        <div class="modal-actions">
+          <button id="cancel-modal" class="ghost">Cancel</button>
+          <button id="save-modal" class="primary">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
